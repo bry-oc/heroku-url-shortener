@@ -86,6 +86,21 @@ app.post('/api/shorturl', (req, res) => {
 //lookup shorturl
 //redirect to longurl if it does
 //else error
+app.get('/api/shorturl/:id?', (req, res) => {
+    const short_url_id = req.params.id;
+    Shorten.findOne({ short_url: short_url_id }, function(err, url){
+        if(err){
+            return console.error(err);
+        } else {
+            if(url){
+                res.redirect(url.original_url);
+            }
+            else {
+                return res.json({error:"No short URL found for the given input"});
+            }
+        }
+    })
+});
 app.listen(PORT, () => {
     console.log(`App is listening on port ${PORT}`)
 });
