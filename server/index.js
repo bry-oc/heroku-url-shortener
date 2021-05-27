@@ -3,6 +3,7 @@ const dns = require("dns");
 const dotenv = require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const path = require("path");
 const PORT = process.env.PORT || 3001;
 
@@ -13,17 +14,26 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors({optionsSuccessStatus: 200}));
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-//shortlink schema
-const shortenSchema = new mongoose.Schema({
-    original_url: String,
-    short_url: Number
+//connect to mongodb
+mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "connection error:"));
+
+db.once("open", function() {
+  console.log("Connection Successful!");
 });
 
+//shortlink schema
+const shortenSchema = new mongoose.Schema({
+    original_url: { type: String, required: true },
+    short_url: { type: Number }
+});
+
+shortenSchema.plugin(AutoIncrement, {id:'short_url_seq',inc_field: 'short_url'});
+
 const Shorten = mongoose.model('Shorten', shortenSchema);
-
-//connect to mongodb
-mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true, useUnifiedTopology: true });
-
 
 //post
 //verify that domain is valid
@@ -33,37 +43,42 @@ mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true, useUnified
 app.post('/api/shorturl', (req, res) => { 
     //post request will use req.body.domain
     const domain = req.body.domain;
-    console.log(domain);
     //filter input to fit domain.name format
     //remove http(s)://
-    const domainRegex = /^https?:\/\//i;
+    const domainRegex = /^https:\/\//i;
     const domainFormat = domain.replace(domainRegex, "");
-    console.log(domainFormat);
     //verify the domain is valid
     dns.lookup(domainFormat, (err, address, family) => {
         if(err){
-            res.json({error:"Invalid URL"});
-        } 
-    })
-    //does url already have shortlink?
-    Shorten.findOne({ long_url: domain }, function(err, domain){
-        if(err){
-            console.log(err);
+            //the domain is not a valid
+            return res.json({error: "Invalid URL"})
         } else {
-            if(domain === null){
-                //create new
-                console.log("did not find");
-                console.log(domain);
-
-            } else {
-                //return existing
-                
-            }
+            //the domain is valid
+            //lookup the domain in db
+            Shorten.findOne({ original_url: domain }, function(err, url){
+                if(err){
+                    return console.error(err);
+                } else {
+                    if(!url){
+                        //the url was not found
+                        //create one
+                        const newUrl = new Shorten({original_url: domain});
+                        newUrl.save(function(err, data) {
+                            if(err){
+                                return console.error(err);
+                            } else {
+                                return res.json({original_url: data.original_url, short_url: data.short_url});
+                            }                    
+                        });
+                    } else {
+                        //the url was found
+                        //return existing
+                        return res.json({original_url: url.original_url, short_url: url.short_url});
+                    }
+                }
+            });
         }
     });
-    //return existing
-    //create new
-    res.json({status:"all clear"})
 });
 
 
