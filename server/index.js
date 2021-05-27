@@ -29,8 +29,10 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 //return url+shorturl if it does
 //otherwise create new
 app.get('/api/shorturl', (req, res) => { 
+    //post request will use req.body.domain
     domain = "https://google.com";
     //filter input to fit domain.name format
+    //remove http(s)://
     domainRegex = /^https?:\/\//i;
     domainFormat = domain.replace(domainRegex, "");
     console.log(domainFormat);
