@@ -6,6 +6,8 @@ function FormDisplay(){
     const [display, setDisplay] = React.useState("Shorten");
     const [text, setText] = React.useState("");
 
+    const baseURL = window.location.href;
+
     let createShortUrl = (e) => {
         e.preventDefault();
         let url = e.target.url.value;
@@ -24,7 +26,10 @@ function FormDisplay(){
                 .then((data) => {
                     if(!data.error){
                         console.log(data);
-                        setText(data.short_url);
+                        setText(baseURL + "api/shorturl/" + data.short_url);
+                        setDisplay("Copy");
+                    } else {
+                        setText(data.error);
                     }
                 })
         } else if (display === "Copy"){
