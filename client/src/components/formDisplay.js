@@ -31,7 +31,6 @@ function FormDisplay(){
                             setText(baseURL + "api/shorturl/" + data.short_url);
                             setDisplay("Copy");
                         } else {
-                            setText(data.error);
                             setWarning("Please provide a valid URL");
                         }
                     })
@@ -64,6 +63,7 @@ function FormDisplay(){
             setDisplay("Shorten");
             setWarning("");
         }
+        setWarning("");
     }
 
 
@@ -73,7 +73,7 @@ function FormDisplay(){
     //submit input will change to copied
     //if text input is cleared, reset
     return(
-        <div>
+        <div className="wrapper">
             <form onSubmit={createShortUrl}>
                 <label for="url">Please enter your URL</label><br></br>
                 <input type="text" id="url" placeholder="https://www.example.com" onChange={handleChange} onFocus={handleFocus} onKeyDown={handleKeyDown} value={text} ref={textInputRef}></input>
