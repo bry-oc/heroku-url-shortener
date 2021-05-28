@@ -49,8 +49,8 @@ app.post('/api/shorturl', (req, res) => {
     }
     //filter input to fit domain.name format
     //remove http(s)://
-    const domainRegex = /^https?:\/\//i;
-    const domainFormat = domain.replace(domainRegex, "");
+    //const domainRegex = /^https?:\/\//i;
+    const domainFormat = domain.split('/')[2];
     //verify the domain is valid
     dns.lookup(domainFormat, (err, address, family) => {
         if(err){
