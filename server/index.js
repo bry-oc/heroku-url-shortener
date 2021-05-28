@@ -15,7 +15,7 @@ app.use(cors({optionsSuccessStatus: 200}));
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 //connect to mongodb
-mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true, returnNewDocument: true });
 
 const db = mongoose.connection;
 
@@ -43,15 +43,19 @@ const Shorten = mongoose.model('Shorten', shortenSchema);
 app.post('/api/shorturl', (req, res) => { 
     //post request will use req.body.domain
     const domain = req.body.domain;
+    const httpFormat = /^https?:\/\/.+\..+\..+/i;
+    if( !httpFormat.test(domain) ){
+        return res.json({error: "Invalid URL"});
+    }
     //filter input to fit domain.name format
     //remove http(s)://
-    const domainRegex = /^https:\/\//i;
+    const domainRegex = /^https?:\/\//i;
     const domainFormat = domain.replace(domainRegex, "");
     //verify the domain is valid
     dns.lookup(domainFormat, (err, address, family) => {
         if(err){
             //the domain is not a valid
-            return res.json({error: "Invalid URL"})
+            return res.json({error: "Invalid Hostname"})
         } else {
             //the domain is valid
             //lookup the domain in db
