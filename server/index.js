@@ -83,6 +83,7 @@ app.post('/api/shorturl', (req, res) => {
             });
         }
     });
+    return;
 });
 
 
@@ -104,7 +105,9 @@ app.get('/api/shorturl/:id?', (req, res) => {
             }
         }
     })
+    return;
 });
+
 app.listen(PORT, () => {
     console.log(`App is listening on port ${PORT}`)
 });
