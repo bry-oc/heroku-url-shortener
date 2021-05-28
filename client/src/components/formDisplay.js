@@ -21,7 +21,7 @@ function FormDisplay(){
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        domain: url,
+                        url: url,
                     })
                 })
                     .then((res) => res.json())
