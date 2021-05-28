@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 function FormDisplay(){
     const [originalUrl , setOriginalUrl] = React.useState(null);
     const [shortUrl, setShortUrl] = React.useState(null);
     const [display, setDisplay] = React.useState("Shorten");
     const [text, setText] = React.useState("");
+    const textInputRef = useRef(null);
 
     const baseURL = window.location.href;
 
@@ -32,11 +33,11 @@ function FormDisplay(){
                         setText(data.error);
                     }
                 })
-        } else if (display === "Copy"){
-
-        } else if (display === "Copied"){
-
-        }
+        } else if (display === "Copy" || display === "Copied"){
+            textInputRef.current.select();
+            document.execCommand("copy");
+            setDisplay("Copied")
+        } 
     }
 
     let handleChange = (e) =>{
@@ -54,7 +55,7 @@ function FormDisplay(){
         <div>
             <form onSubmit={createShortUrl}>
                 <label for="url">Please enter your URL</label><br></br>
-                <input type="text" id="url" placeholder="https://www.example.com" onChange={handleChange} value={text}></input>
+                <input type="text" id="url" placeholder="https://www.example.com" onChange={handleChange} value={text} ref={textInputRef}></input>
                 <input type="submit" value={display}></input>
             </form>
         </div>        
