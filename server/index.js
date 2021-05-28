@@ -42,7 +42,7 @@ const Shorten = mongoose.model('Shorten', shortenSchema);
 //otherwise create new
 app.post('/api/shorturl', (req, res) => { 
     //post request will use req.body.domain
-    const domain = req.body.domain;
+    const domain = req.body.URL;
     const httpFormat = /^https?:\/\/.+\..+\..+/i;
     if( !httpFormat.test(domain) ){
         return res.json({error: "Invalid URL"});
@@ -91,8 +91,8 @@ app.post('/api/shorturl', (req, res) => {
 //lookup shorturl
 //redirect to longurl if it does
 //else error
-app.get('/api/shorturl/:id?', (req, res) => {
-    const short_url_id = req.params.id;
+app.get('/api/shorturl/:short_url?', (req, res) => {
+    const short_url_id = req.params.short_url;
     Shorten.findOne({ short_url: short_url_id }, function(err, url){
         if(err){
             return console.error(err);
