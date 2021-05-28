@@ -31,7 +31,7 @@ function FormDisplay(){
                             setText(baseURL + "api/shorturl/" + data.short_url);
                             setDisplay("Copy");
                         } else {
-                            setWarning("Please provide a valid URL");
+                            setWarning("Please provide a valid URL.");
                         }
                     })
             }            
@@ -75,11 +75,11 @@ function FormDisplay(){
     return(
         <div className="wrapper">
             <form onSubmit={createShortUrl}>
-                <label for="url">Please enter your URL</label><br></br>
+                <label htmlFor="url">Please enter your URL.</label><br></br><br></br>
                 <input type="text" id="url" placeholder="https://www.example.com" onChange={handleChange} onFocus={handleFocus} onKeyDown={handleKeyDown} value={text} ref={textInputRef}></input>
                 <input type="submit" value={display}></input>
             </form>
-            <p>{warning}</p>
+            <p id="warning">{warning}</p>
         </div>        
     );
 }

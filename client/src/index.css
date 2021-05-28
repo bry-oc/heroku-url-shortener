@@ -1,13 +1,36 @@
 body {
+  height: calc(100vh - 80px);
   margin: 0;
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  word-wrap: normal;
+  background: url(https://www.toptal.com/designers/subtlepatterns/patterns/bush.png);
+}
+.container, .wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.container {
+  margin-top: 80px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 2px 2px 20px;
+}
+h1{
+  margin: 0;    
+}
+p {
+  font-size: max(1em, 20px);
+}
+#url {
+  width: 500px;
+}
+#warning {
+  min-height: 27px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
