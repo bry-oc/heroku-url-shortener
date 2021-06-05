@@ -1,4 +1,3 @@
-import './App.css';
 import FormDisplay from './components/formDisplay.js';
 import Title from './components/title.js';
 import Usage from './components/usage.js';
